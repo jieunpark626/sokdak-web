@@ -4,19 +4,19 @@ import popup from '../assets/images/popup.png'
 import warningIcon from '../assets/images/warning-icon.png'
 import okIcon from '../assets/images/ok-icon.png'
 
-type PopupVariant = 'warning' | 'success'
+type AlertModalVariant = 'warning' | 'success'
 
-interface PopupProps {
+interface AlertModalProps {
   isOpen: boolean
   onClose: () => void
   message: string
   subMessage?: string
-  variant?: PopupVariant
+  variant?: AlertModalVariant
   buttonText?: string
   onButtonClick?: () => void
 }
 
-function Popup({
+function AlertModal({
   isOpen,
   onClose,
   message,
@@ -24,7 +24,7 @@ function Popup({
   variant = 'warning',
   buttonText,
   onButtonClick,
-}: PopupProps) {
+}: AlertModalProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [contentSize, setContentSize] = useState({ width: 0, height: 0 })
 
@@ -40,7 +40,7 @@ function Popup({
   const icon = variant === 'warning' ? warningIcon : okIcon
 
   // popup 크기: 컨텐츠 + 패딩
-  const popupWidth = Math.max(contentSize.width + 40, 200)
+  const popupWidth = Math.max(contentSize.width + 40, 400)
   const popupHeight = contentSize.height + 32
 
   // popup-bg 크기: popup보다 약간 크게
@@ -126,4 +126,4 @@ function Popup({
   )
 }
 
-export default Popup
+export default AlertModal

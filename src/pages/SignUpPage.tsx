@@ -3,10 +3,14 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
-import { PageLayout, InputField, RadioButton, Popup } from '../shared/ui'
+import { AxiosError } from 'axios'
+import { PageLayout, InputField, RadioButton, AlertModal } from '../shared/ui'
+import { authApi } from '../shared/api' 
+import type { RegisterRequest } from '../shared/api'
 import sokdakLogo from '../shared/assets/images/sokdak-logo.png'
 import rightNav from '../shared/assets/images/right-nav.svg'
 import sokdakMascot from '../shared/assets/images/sokdak-mascot.png'
+import leftArrow from '../shared/assets/images/left-arrow.png'
 
 const signUpSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요'),
@@ -14,9 +18,9 @@ const signUpSchema = z.object({
     .string()
     .min(1, '이메일을 입력해주세요')
     .email('유효한 이메일을 입력해주세요'),
-  id: z.string().min(1, 'ID를 입력해주세요'),
+  loginId: z.string().min(1, 'ID를 입력해주세요'),
   password: z.string().min(6, '비밀번호는 최소 6자 이상이어야 합니다'),
-  gender: z.enum(['girl', 'male', 'other'], {
+  gender: z.enum(['FEMALE', 'MALE', 'OTHER'], {
     message: '성별을 선택해주세요',
   }),
 })
@@ -25,7 +29,9 @@ type SignUpFormData = z.infer<typeof signUpSchema>
 
 function SignUpPage() {
   const navigate = useNavigate()
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
     register,
@@ -41,13 +47,32 @@ function SignUpPage() {
 
   const selectedGender = watch('gender')
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log('SignUp data:', data)
-    setShowSuccessModal(true)
+  const onSubmit = async (data: SignUpFormData) => {
+    setIsLoading(true)
+    setErrorMessage(null)
+
+    try {
+      const requestData: RegisterRequest = {
+        loginId: data.loginId,
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        gender: data.gender,
+      }
+      await authApi.register(requestData)
+      setShowSuccessPopup(true)
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>
+      setErrorMessage(
+        axiosError.response?.data?.message || '회원가입에 실패했습니다.'
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleModalClose = () => {
-    setShowSuccessModal(false)
+  const handlePopupClose = () => {
+    setShowSuccessPopup(false)
     navigate('/login')
   }
 
@@ -57,6 +82,16 @@ function SignUpPage() {
       <div className="absolute left-[34px] top-[60px] h-[60px] w-[212px]">
         <img src={sokdakLogo} alt="Sokdak" className="h-full w-auto" />
       </div>
+
+      {/* Back Button */}
+      <button
+        type="button"
+        onClick={() => navigate('/login')}
+        className="absolute left-[440px] top-[250px]"
+      >
+        <img src={leftArrow} alt="Back" className="h-[32px] w-[32px]" />
+      </button>
+
 
       {/* Mascot */}
       <div className="absolute left-[544px] top-[100px] h-[192px] w-[192px]">
@@ -90,10 +125,10 @@ function SignUpPage() {
 
         {/* ID Field */}
         <InputField
-          {...register('id')}
+          {...register('loginId')}
           type="text"
           placeholder="ID"
-          error={errors.id?.message}
+          error={errors.loginId?.message}
         />
 
         {/* Password Field */}
@@ -108,21 +143,21 @@ function SignUpPage() {
         <div className="mt-4 flex items-center justify-center gap-8">
           <RadioButton
             {...register('gender')}
-            value="girl"
-            label="Girl"
-            isSelected={selectedGender === 'girl'}
+            value="FEMALE"
+            label="Female"
+            isSelected={selectedGender === 'FEMALE'}
           />
           <RadioButton
             {...register('gender')}
-            value="male"
+            value="MALE"
             label="Male"
-            isSelected={selectedGender === 'male'}
+            isSelected={selectedGender === 'MALE'}
           />
           <RadioButton
             {...register('gender')}
-            value="other"
+            value="OTHER"
             label="Other"
-            isSelected={selectedGender === 'other'}
+            isSelected={selectedGender === 'OTHER'}
           />
         </div>
         {errors.gender && (
@@ -143,14 +178,14 @@ function SignUpPage() {
 
 
       {/* Success Popup */}
-      <Popup
-        isOpen={showSuccessModal}
-        onClose={handleModalClose}
+      <AlertModal
+        isOpen={showSuccessPopup}
+        onClose={handlePopupClose}
         message="Your SignUp is Done!"
         subMessage="Go check your email to verify your account."
         variant="success"
         buttonText="Login"
-        onButtonClick={handleModalClose}
+        onButtonClick={handlePopupClose}
       />
     </PageLayout>
   )

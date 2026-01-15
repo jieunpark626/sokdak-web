@@ -20,3 +20,45 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Custom Scrollbar - Windows XP Style */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 17px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #F1F1F1;
+  border-left: 1px solid #D2D2D2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #C4E5FF;
+  border: 1px solid #7CC2F0;
+  box-shadow: inset 1px 1px 0px #FFFFFF;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #A6D8FF;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button:single-button {
+  background-color: #F1F1F1;
+  display: block;
+  border: 1px solid #D2D2D2;
+  height: 17px;
+  width: 17px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='%236BA6D3'><path d='M4 0l4 4H0z'/></svg>");
+}
+
+.custom-scrollbar::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='%236BA6D3'><path d='M0 0l4 4 4-4z'/></svg>");
+}
+
+.custom-scrollbar::-webkit-scrollbar-button:hover {
+  background-color: #E5F3FF;
+}

@@ -16,16 +16,16 @@ function PageLayout({
 }: PageLayoutProps) {
   return (
     <div
-      className="relative flex h-screen w-full items-center justify-center overflow-hidden"
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden p-4 md:p-8"
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      {/* Character */}
+      {/* Character - 작은 화면에서는 숨김 */}
       <div
-        className={`absolute ${characterPosition === 'top' ? 'top-0' : 'bottom-0'} left-[58px] z-10 h-[186px] w-[203px]`}
+        className={`absolute ${characterPosition === 'top' ? 'top-4' : 'bottom-4'} left-4 z-0 hidden h-[120px] w-[130px] opacity-80 md:left-[58px] md:block md:h-[186px] md:w-[203px]`}
       >
         <img
           src={sokdakCharacter}
@@ -34,9 +34,9 @@ function PageLayout({
         />
       </div>
 
-      {/* Main Card */}
+      {/* Main Card - 반응형 크기 */}
       <div
-        className="relative h-[700px] w-[1280px]"
+        className="relative h-full w-full max-h-[700px] max-w-[1280px] md:h-[90vh] lg:h-[700px]"
         style={{
           background: cardBackground,
           borderRadius: '15px',
