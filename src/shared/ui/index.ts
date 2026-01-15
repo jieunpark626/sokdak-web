@@ -7,3 +7,4 @@ export { default as AlertModal } from './AlertModal'
 export { default as MainLayout } from './MainLayout';
 export { default as CharacterCard } from './CharacterCard';
 export { default as ChatModal } from './ChatModal';
+export { default as Loading } from './Loading';

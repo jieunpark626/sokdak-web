@@ -281,6 +281,23 @@ export const ChatModal = ({
                       </ul>
                     </div>
                   ))}
+                  {/* AI 타이핑 인디케이터 */}
+                  {isSending && (
+                    <div>
+                      <p className="text-[12px] font-semibold text-[#3E6F97]">
+                        {character?.name || 'AI Assistant'} is typing:
+                      </p>
+                      <ul className="ml-4 mt-1">
+                        <li className="text-[13px] text-[#5389B5]">
+                          <span className="inline-flex gap-[2px]">
+                            <span className="animate-bounce" style={{ animationDelay: '0ms' }}>•</span>
+                            <span className="animate-bounce" style={{ animationDelay: '150ms' }}>•</span>
+                            <span className="animate-bounce" style={{ animationDelay: '300ms' }}>•</span>
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
               )}

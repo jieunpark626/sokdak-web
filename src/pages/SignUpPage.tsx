@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { AxiosError } from 'axios'
-import { PageLayout, InputField, RadioButton, AlertModal } from '../shared/ui'
+import { PageLayout, InputField, RadioButton, AlertModal, Loading } from '../shared/ui'
 import { authApi } from '../shared/api' 
 import type { RegisterRequest } from '../shared/api'
 import sokdakLogo from '../shared/assets/images/sokdak-logo.png'
@@ -187,6 +187,19 @@ function SignUpPage() {
         buttonText="Login"
         onButtonClick={handlePopupClose}
       />
+
+      {/* Error Popup */}
+      <AlertModal
+        isOpen={!!errorMessage}
+        onClose={() => setErrorMessage(null)}
+        message={errorMessage || ''}
+        variant="warning"
+        buttonText="OK"
+        onButtonClick={() => setErrorMessage(null)}
+      />
+
+      {/* Loading */}
+      <Loading isLoading={isLoading} message="Signing up..." />
     </PageLayout>
   )
 }

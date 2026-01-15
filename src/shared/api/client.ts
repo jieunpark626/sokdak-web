@@ -1,9 +1,7 @@
 import axios from 'axios'
 import { tokenStorage } from './token'
 
-// 개발 환경에서는 프록시 사용, 프로덕션에서는 직접 호출
-//const BASE_URL = import.meta.env.DEV ? '/api' : 'https://api.sokdak.site'
-const BASE_URL = 'http://localhost:8000'
+const BASE_URL = 'https://api.sokdak.site'
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,

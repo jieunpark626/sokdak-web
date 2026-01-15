@@ -6,6 +6,7 @@ import iconChat from '../assets/images/icon-chat.png';
 import iconRepertoire from '../assets/images/icon-repertoire.svg';
 import PageLayout from './PageLayout';
 import { tokenStorage } from '../api/token';
+import { authApi } from '../api';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -21,14 +22,19 @@ export const MainLayout = ({
   const navigate = useNavigate();
   const username = tokenStorage.getUserName() || 'Guest';
 
+  const handleLogout = async () => {
+    await authApi.logout();
+    navigate('/login');
+  };
+
   return (
     <PageLayout cardBackground={CHAT_CARD_BACKGROUND}>
       {/* 로고 & URL Bar */}
       <div className="absolute left-4 top-3 h-12 w-40 md:left-[22px] md:top-[13px] md:h-[60px] md:w-[212px]">
         <img src={sokdakLogo} alt="Sokdak" className="h-full w-auto" />
       </div>
-      <div className="absolute left-44 top-4 flex h-8 w-48 items-center rounded-[5px] px-3 bg-white/80 shadow-[inset_0px_1px_0.5px_0px_rgba(206,206,208,1)] md:left-[253px] md:top-[22px] md:h-[42px] md:w-[478px] md:px-[14px]">
-        <span className="text-sm text-[#5389B5]/80 font-['Segoe_UI'] md:text-[16px]">sokdak.site</span>
+      <div className="absolute left-36 top-4 right-4 flex h-8 items-center rounded-[5px] px-3 bg-white/80 shadow-[inset_0px_1px_0.5px_0px_rgba(206,206,208,1)] sm:left-44 sm:right-8 md:left-[253px] md:right-auto md:top-[22px] md:h-[42px] md:w-[478px] md:px-[14px] lg:w-[600px]">
+        <span className="text-xs text-[#5389B5]/80 font-['Segoe_UI'] sm:text-sm md:text-[16px]">sokdak.site</span>
       </div>
 
       <div className="absolute inset-x-2 top-16 bottom-4 rounded-[10px] bg-white/95 shadow-[0px_0px_4px_0px_rgba(51,87,110,0.25)] md:inset-x-[14px] md:top-[86px] md:bottom-[14px]">
@@ -79,6 +85,12 @@ export const MainLayout = ({
           <p className="absolute w-full text-center top-[200px] text-[18px] font-semibold text-[#3E6F97] font-['Segoe_UI'] lg:top-[232px] lg:text-[20px]">
             {username}
           </p>
+          <button
+            onClick={handleLogout}
+            className="absolute w-full text-center top-[230px] text-[14px] font-medium text-[#3E6F97] underline hover:text-[#2A5070] font-['Segoe_UI'] lg:top-[262px]"
+          >
+            Logout
+          </button>
         </div>
 
         {/* 본문 콘텐츠 영역 */}

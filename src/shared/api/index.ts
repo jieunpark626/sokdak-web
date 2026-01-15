@@ -3,6 +3,7 @@ export { tokenStorage } from './token'
 export { authApi } from './auth'
 export { characterApi } from './character'
 export { conversationApi } from './conversation'
+export { journalApi } from './journal'
 export type {
   RegisterRequest,
   RegisterResponse,
@@ -27,3 +28,10 @@ export type {
   MessageListResponse,
   SendMessageRequest,
 } from './conversation'
+export type {
+  Journal,
+  JournalListItem,
+  JournalListResponse,
+  CreateJournalRequest,
+  UpdateJournalRequest,
+} from './journal'
