@@ -35,7 +35,8 @@ function CustomizeCharacterPage() {
   const mode = searchParams.get('mode') || 'one-time';
 
   // --- API에서 persona 옵션 가져오기 ---
-  const { purposeOptions, styleOptions, toneOptions, isLoading: isLoadingOptions } = usePersonaOptions();
+  //const { purposeOptions, styleOptions, toneOptions, isLoading: isLoadingOptions } = usePersonaOptions();
+  const { purposeOptions, styleOptions, toneOptions} = usePersonaOptions();
 
   // --- 상태 관리 (State) ---
   const [name, setName] = useState('');
