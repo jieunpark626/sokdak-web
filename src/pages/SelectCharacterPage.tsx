@@ -87,7 +87,7 @@ function SelectCharacterPage() {
         await conversationApi.createConversation({
           character_id: characterResponse.id,
           user_id: userId,
-          language: 'english',
+          language: 'auto',
           conversation_type: conversationType,
         });
 
