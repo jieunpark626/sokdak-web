@@ -89,7 +89,7 @@ export const ChatModal = ({
         const newConversation = await conversationApi.createConversation({
           character_id: character.id,
           user_id: userId,
-          language: 'english',
+          language: 'auto',
           conversation_type: character.type === 'ephemeral' ? 'ephemeral' : 'persistent',
         })
         convId = newConversation.id
