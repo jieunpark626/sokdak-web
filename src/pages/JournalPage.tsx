@@ -18,6 +18,7 @@ function JournalPage() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [isNewJournal, setIsNewJournal] = useState(false) // 새 일기 작성 모드
 
   // 삭제 모달 상태
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -60,7 +61,7 @@ function JournalPage() {
     }
   }, [navigate])
 
-  // 오늘 일기 찾거나 생성
+  // 오늘 일기 찾기 (없으면 빈 상태로 표시)
   const initializeTodayJournal = useCallback(async () => {
     const userId = tokenStorage.getUserId()
     if (!userId) {
@@ -82,18 +83,13 @@ function JournalPage() {
         setCurrentJournal(detail)
         setTitle(detail.title)
         setContent(detail.content)
+        setIsNewJournal(false)
       } else {
-        // 오늘 일기가 없으면 새로 생성
-        const newJournal = await journalApi.createJournal({
-          userId,
-          title: '',
-          content: '',
-        })
-        setCurrentJournal(newJournal)
+        // 오늘 일기가 없으면 빈 상태로 표시 (POST하지 않음)
+        setCurrentJournal(null)
         setTitle('')
         setContent('')
-        // 목록 다시 가져오기
-        await fetchJournalList()
+        setIsNewJournal(true)
       }
     } catch (error) {
       console.error('Failed to initialize journal:', error)
@@ -113,6 +109,7 @@ function JournalPage() {
       setCurrentJournal(detail)
       setTitle(detail.title)
       setContent(detail.content)
+      setIsNewJournal(false)
     } catch (error) {
       console.error('Failed to fetch journal:', error)
     }
@@ -120,15 +117,31 @@ function JournalPage() {
 
   // 저장
   const handleSave = async () => {
-    if (!currentJournal) return
+    const userId = tokenStorage.getUserId()
+    if (!userId) {
+      navigate('/login')
+      return
+    }
 
     setIsSaving(true)
     try {
-      const updated = await journalApi.updateJournal(currentJournal.id, {
-        title,
-        content,
-      })
-      setCurrentJournal(updated)
+      if (isNewJournal) {
+        // 새 일기 생성 (POST)
+        const newJournal = await journalApi.createJournal({
+          userId,
+          title,
+          content,
+        })
+        setCurrentJournal(newJournal)
+        setIsNewJournal(false)
+      } else if (currentJournal) {
+        // 기존 일기 수정 (PUT)
+        const updated = await journalApi.updateJournal(currentJournal.id, {
+          title,
+          content,
+        })
+        setCurrentJournal(updated)
+      }
       await fetchJournalList()
     } catch (error) {
       console.error('Failed to save journal:', error)
