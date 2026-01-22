@@ -128,7 +128,7 @@ function SelectCharacterPage() {
         isOpen={modalStep === 'confirm'}
         onClose={() => setModalStep('none')}
         title="캐릭터 생성 확인"
-        message="Would you like to create the friend character?"
+        message={`Would you like to create the ${selectedType} character?`}
         showInput={false}
         onOk={handleConfirmOk}
         onCancel={() => setModalStep('none')}
