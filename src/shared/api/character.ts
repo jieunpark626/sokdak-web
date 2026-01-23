@@ -1,11 +1,12 @@
 import { apiClient } from './client'
 
 // Types
+export type AppearanceType = 'dog' | 'duck' | 'frog' | 'friend' | 'priest'
+
 export interface Persona {
   tone: string
   style: string
   purpose: string
-  gender: string
 }
 
 export interface Character {
@@ -13,6 +14,7 @@ export interface Character {
   user_id: string
   name: string
   persona: Persona
+  appearance: AppearanceType
   type: 'ephemeral' | 'persistent'
   last_chat_at: string | null
   created_at: string
@@ -27,19 +29,24 @@ export interface CreateCharacterRequest {
   user_id: string
   name: string
   persona: Persona
+  appearance: AppearanceType
   type: 'ephemeral' | 'persistent'
 }
 
 export interface UpdateCharacterRequest {
   name?: string
   persona?: Partial<Persona>
+  appearance?: AppearanceType
 }
 
 export interface PersonaOptions {
-  gender: string[]
   tone: string[]
   style: string[]
   purpose: string[]
+}
+
+export interface AppearancesResponse {
+  items: AppearanceType[]
 }
 
 // 기본 캐릭터(Friend, Priest)의 preset persona
@@ -48,14 +55,18 @@ export const PRESET_PERSONAS: Record<string, Persona> = {
     tone: 'friendly',
     style: 'chatty',
     purpose: 'casual_chat',
-    gender: 'neutral',
   },
   priest: {
     tone: 'calm',
     style: 'empathetic',
     purpose: 'confession',
-    gender: 'neutral',
   },
+}
+
+// 기본 캐릭터의 appearance 매핑
+export const PRESET_APPEARANCES: Record<string, AppearanceType> = {
+  friend: 'friend',
+  priest: 'priest',
 }
 
 // API functions
@@ -63,6 +74,12 @@ export const characterApi = {
   // 페르소나 선택 옵션 목록 조회
   getPersonas: async (): Promise<PersonaOptions> => {
     const response = await apiClient.get<PersonaOptions>('/characters/personas')
+    return response.data
+  },
+
+  // 사용 가능한 외형 목록 조회
+  getAppearances: async (): Promise<AppearancesResponse> => {
+    const response = await apiClient.get<AppearancesResponse>('/characters/appearances')
     return response.data
   },
 
