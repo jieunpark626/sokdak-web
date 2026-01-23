@@ -7,6 +7,7 @@ import welcomeIcon from '../assets/images/welcome-icon.png'
 import { conversationApi, type Message } from '../api/conversation'
 import { type Character } from '../api/character'
 import { tokenStorage } from '../api/token'
+import { getAppearanceImage } from '../utils/appearanceImages'
 
 interface ChatModalProps {
   isOpen: boolean
@@ -220,7 +221,7 @@ export const ChatModal = ({
           <div className="flex w-[120px] flex-col justify-between py-2">
             {/* AI 캐릭터 카드 (상단) */}
             <div className="flex flex-col items-center">
-              <CharacterCard image={welcomeIcon} size={100} />
+              <CharacterCard image={character?.appearance ? getAppearanceImage(character.appearance) : welcomeIcon} size={100} />
               <span className="mt-1 flex items-center gap-1 text-[12px] text-[#3E6F97]">
                 <span className="h-[8px] w-[8px] rounded-full bg-[#39FF14] shadow-[0_0_4px_rgba(57,255,20,0.8)]" />
                 {character?.name || 'AI'}

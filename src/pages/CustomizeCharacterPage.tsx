@@ -7,10 +7,12 @@ import {
   GradientButton,
   CharacterCard
 } from '../shared/ui';
-import { characterApi } from '../shared/api/character';
+import { characterApi, type AppearanceType } from '../shared/api/character';
 import { conversationApi } from '../shared/api/conversation';
 import { tokenStorage } from '../shared/api/token';
 import { usePersonaOptions } from '../shared/hooks/usePersonaOptions';
+import { useAppearanceOptions } from '../shared/hooks/useAppearanceOptions';
+import { getAppearanceImage } from '../shared/utils/appearanceImages';
 
 // 아이콘 이미지 임포트
 import iconName from '../shared/assets/images/icon-name.png';
@@ -18,11 +20,6 @@ import iconPurpose from '../shared/assets/images/icon-purpose.png';
 import iconStyle from '../shared/assets/images/icon-style.png';
 import iconTone from '../shared/assets/images/icon-tone.png';
 import iconAppearance from '../shared/assets/images/icon-appearance.png';
-
-// 캐릭터 외형 이미지 임포트
-import friendImg from '../shared/assets/images/appearance-0.png';
-import priestImg from '../shared/assets/images/appearance-1.png';
-import customImg from '../shared/assets/images/appearance-2.png';
 
 /**
  * CustomizeCharacterPage: 사용자 정의 캐릭터 설정 페이지
@@ -34,19 +31,17 @@ function CustomizeCharacterPage() {
   // URL 쿼리 스트링에서 모드 추출 (one-time 또는 persistent)
   const mode = searchParams.get('mode') || 'one-time';
 
-  // --- API에서 persona 옵션 가져오기 ---
-  //const { purposeOptions, styleOptions, toneOptions, isLoading: isLoadingOptions } = usePersonaOptions();
-  const { purposeOptions, styleOptions, toneOptions} = usePersonaOptions();
+  // --- API에서 옵션 가져오기 ---
+  const { purposeOptions, styleOptions, toneOptions } = usePersonaOptions();
+  const { appearances } = useAppearanceOptions();
 
   // --- 상태 관리 (State) ---
   const [name, setName] = useState('');
   const [selectedPurpose, setSelectedPurpose] = useState('casual_chat');
   const [selectedStyle, setSelectedStyle] = useState('chatty');
   const [selectedTone, setSelectedTone] = useState('warm');
-  const [selectedAppearance, setSelectedAppearance] = useState(0);
+  const [selectedAppearance, setSelectedAppearance] = useState<AppearanceType>('dog');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const appearances = [friendImg, priestImg, customImg];
 
   return (
     <MainLayout activeTab="chat">
@@ -139,15 +134,15 @@ function CustomizeCharacterPage() {
               <span className="text-[18px] font-bold text-[#5389B5] font-['Segoe_UI']">Appearance</span>
             </div>
             <div className="flex gap-4 pl-7">
-              {appearances.map((img, idx) => (
-                <div key={idx} className="relative">
-                  <CharacterCard 
-                    image={img} 
-                    size={80} 
-                    onClick={() => setSelectedAppearance(idx)} 
+              {appearances.map((appearance) => (
+                <div key={appearance} className="relative">
+                  <CharacterCard
+                    image={getAppearanceImage(appearance)}
+                    size={80}
+                    onClick={() => setSelectedAppearance(appearance)}
                   />
                   {/* 선택된 이미지에 표시될 체크 표시 (필요 시) */}
-                  {selectedAppearance === idx && (
+                  {selectedAppearance === appearance && (
                     <div className="absolute -right-1 -top-1 z-20 h-5 w-5 rounded-full bg-[#5389B5] flex items-center justify-center border-2 border-white">
                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                         <path d="M1 4L4 7L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -186,8 +181,8 @@ function CustomizeCharacterPage() {
                     tone: selectedTone,
                     style: selectedStyle,
                     purpose: selectedPurpose,
-                    gender: 'neutral',
                   },
+                  appearance: selectedAppearance,
                   type: mode === 'one-time' ? 'ephemeral' : 'persistent',
                 });
 
