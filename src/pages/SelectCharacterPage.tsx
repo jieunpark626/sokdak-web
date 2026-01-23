@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MainLayout, CharacterCard } from '../shared/ui';
 import SystemModal from '../shared/ui/SystemModal';
-import { characterApi, PRESET_PERSONAS } from '../shared/api/character';
+import { characterApi, PRESET_PERSONAS, PRESET_APPEARANCES } from '../shared/api/character';
 import { conversationApi } from '../shared/api/conversation';
 import { tokenStorage } from '../shared/api/token';
-import friendImg from '../shared/assets/images/appearance-0.png';
-import priestImg from '../shared/assets/images/appearance-1.png';
-import customImg from '../shared/assets/images/appearance-2.png';
+import { APPEARANCE_IMAGES } from '../shared/utils/appearanceImages';
+
+// 기본 캐릭터용 이미지
+const friendImg = APPEARANCE_IMAGES.friend;
+const priestImg = APPEARANCE_IMAGES.priest;
+const customImg = APPEARANCE_IMAGES.dog; // Custom은 기본적으로 dog 이미지 사용
 
 interface CharacterItemProps {
   title: string;
@@ -75,10 +78,12 @@ function SelectCharacterPage() {
 
       try {
         // 1. 캐릭터 생성
+        const appearance = PRESET_APPEARANCES[selectedType];
         const characterResponse = await characterApi.createCharacter({
           user_id: userId,
           name: characterName.trim(),
           persona,
+          appearance,
           type: mode === 'one-time' ? 'ephemeral' : 'persistent',
         });
 

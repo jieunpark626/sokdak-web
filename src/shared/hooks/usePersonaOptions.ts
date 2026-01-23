@@ -10,7 +10,6 @@ interface UsePersonaOptionsResult {
   purposeOptions: PersonaOption[]
   styleOptions: PersonaOption[]
   toneOptions: PersonaOption[]
-  genderOptions: PersonaOption[]
   isLoading: boolean
   error: Error | null
 }
@@ -57,7 +56,6 @@ export function usePersonaOptions(): UsePersonaOptionsResult {
     purposeOptions: options ? toOptions(options.purpose) : [],
     styleOptions: options ? toOptions(options.style) : [],
     toneOptions: options ? toOptions(options.tone) : [],
-    genderOptions: options ? toOptions(options.gender) : [],
     isLoading,
     error,
   }

@@ -5,6 +5,7 @@ import SystemModal from '../shared/ui/SystemModal'
 import { characterApi, type Character } from '../shared/api/character'
 import { conversationApi, type Conversation } from '../shared/api/conversation'
 import { tokenStorage } from '../shared/api/token'
+import { getAppearanceImage } from '../shared/utils/appearanceImages'
 import welcomeIcon from '../shared/assets/images/welcome-icon.png'
 import characterListIcon from '../shared/assets/images/icon-character-list.png'
 import iconDelete from '../shared/assets/images/icon-delete.png'
@@ -241,7 +242,7 @@ function ChatPage() {
                     >
                       <div className="flex-shrink-0">
                         <CharacterCard
-                          image={welcomeIcon}
+                          image={getAppearanceImage(item.appearance)}
                           size={100}
                         />
                       </div>
@@ -283,7 +284,7 @@ function ChatPage() {
 
                       <div className="flex-shrink-0">
                         <CharacterCard
-                          image={welcomeIcon}
+                          image={getAppearanceImage(item.appearance)}
                           size={100}
                         />
                       </div>
