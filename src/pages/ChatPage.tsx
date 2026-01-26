@@ -337,7 +337,10 @@ function ChatPage() {
       {/* 채팅 모달 */}
       <ChatModal
         isOpen={isChatModalOpen}
-        onClose={() => setIsChatModalOpen(false)}
+        onClose={() => {
+          setIsChatModalOpen(false)
+          setSelectedConversationId(null)
+        }}
         character={selectedCharacter}
         conversationId={selectedConversationId}
         userName={userName}

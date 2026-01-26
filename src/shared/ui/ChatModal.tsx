@@ -171,6 +171,8 @@ export const ChatModal = ({
       } catch {
         // 삭제 실패 시 무시
       }
+      // 삭제 후 내부 상태도 리셋 (다시 열 때 새 conversation 생성하도록)
+      setCurrentConversationId(null)
     }
     onClose()
   }
