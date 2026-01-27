@@ -282,7 +282,7 @@ function JournalPage() {
                 
                 {/* 텍스트 부분: 밑줄 추가 및 선택 시 색상 강조 */}
                 <span
-                  className={`truncate text-[12px] font-['Segoe_UI'] underline underline-offset-4 ${
+                  className={`truncate text-[12px] font-['Segoe_UI'] underline underline-offset-2 ${
                     currentJournal?.id === journal.id
                       ? 'text-[#03228B] font-bold decoration-[#03228B]' // 선택되었을 때
                       : 'text-[#5389B5] decoration-[#5389B5]'           // 기본
