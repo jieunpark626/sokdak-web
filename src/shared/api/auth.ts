@@ -31,7 +31,6 @@ export interface LoginResponse {
   }
   tokens: {
     accessToken: string
-    refreshToken: string
     tokenType: string
     expiresInSeconds: number
   }
@@ -55,11 +54,12 @@ export const authApi = {
 
   // 로그인
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', data)
+    const response = await apiClient.post<LoginResponse>('/auth/login', data, {
+      withCredentials: true, // 쿠키 수신 허용
+    })
 
-    // 토큰 저장
-    const { accessToken, refreshToken } = response.data.tokens
-    tokenStorage.setTokens(accessToken, refreshToken)
+    // accessToken만 저장 (refreshToken은 HttpOnly 쿠키로 자동 저장됨)
+    tokenStorage.setAccessToken(response.data.tokens.accessToken)
 
     // 사용자 정보 저장
     tokenStorage.setUser(response.data.user)
@@ -69,13 +69,12 @@ export const authApi = {
 
   // 로그아웃
   logout: async (): Promise<void> => {
-    const refreshToken = tokenStorage.getRefreshToken()
-    if (refreshToken) {
-      try {
-        await apiClient.post('/auth/logout', { refreshToken })
-      } catch {
-        // 로그아웃 실패해도 로컬 토큰은 삭제
-      }
+    try {
+      await apiClient.post('/auth/logout', {}, {
+        withCredentials: true, // 쿠키 전송
+      })
+    } catch {
+      // 로그아웃 실패해도 로컬 토큰은 삭제
     }
     tokenStorage.clearTokens()
   },
