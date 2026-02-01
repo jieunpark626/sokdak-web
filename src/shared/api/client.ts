@@ -32,25 +32,25 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
-      const refreshToken = tokenStorage.getRefreshToken()
-      if (refreshToken) {
-        try {
-          const response = await axios.post(`${BASE_URL}/auth/refresh`, {
-            refreshToken,
-          })
+      try {
+        // 쿠키가 자동 전송되므로 body 없이 요청
+        const response = await axios.post(
+          `${BASE_URL}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        )
 
-          const { accessToken, refreshToken: newRefreshToken } = response.data
-          tokenStorage.setTokens(accessToken, newRefreshToken)
+        const { accessToken } = response.data
+        tokenStorage.setAccessToken(accessToken)
 
-          // 원래 요청 재시도
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`
-          return apiClient(originalRequest)
-        } catch (refreshError) {
-          // 리프레시 토큰도 만료된 경우 로그아웃 처리
-          tokenStorage.clearTokens()
-          window.location.href = '/login'
-          return Promise.reject(refreshError)
-        }
+        // 원래 요청 재시도
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+        return apiClient(originalRequest)
+      } catch (refreshError) {
+        // 리프레시 토큰도 만료된 경우 로그아웃 처리
+        tokenStorage.clearTokens()
+        window.location.href = '/login'
+        return Promise.reject(refreshError)
       }
     }
 
