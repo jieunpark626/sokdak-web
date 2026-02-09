@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { tokenStorage } from './token'
 
-const BASE_URL = 'https://api.sokdak.site'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -9,6 +9,24 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+// Access Token 갱신 함수 (WebSocket에서도 사용)
+export async function refreshAccessToken(): Promise<string | null> {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/auth/refresh`,
+      {},
+      { withCredentials: true }
+    )
+    const { accessToken } = response.data
+    tokenStorage.setAccessToken(accessToken)
+    return accessToken
+  } catch {
+    tokenStorage.clearTokens()
+    window.location.href = '/login'
+    return null
+  }
+}
 
 // 요청 인터셉터: Access Token 자동 추가
 apiClient.interceptors.request.use(
@@ -32,25 +50,10 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
-      try {
-        // 쿠키가 자동 전송되므로 body 없이 요청
-        const response = await axios.post(
-          `${BASE_URL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        )
-
-        const { accessToken } = response.data
-        tokenStorage.setAccessToken(accessToken)
-
-        // 원래 요청 재시도
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+      const newToken = await refreshAccessToken()
+      if (newToken) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
         return apiClient(originalRequest)
-      } catch (refreshError) {
-        // 리프레시 토큰도 만료된 경우 로그아웃 처리
-        tokenStorage.clearTokens()
-        window.location.href = '/login'
-        return Promise.reject(refreshError)
       }
     }
 

@@ -10,7 +10,7 @@ import { authApi } from '../api';
 
 interface MainLayoutProps {
   children: ReactNode;
-  activeTab: 'chat' | 'journal';
+  activeTab: 'chat' | 'journal' | 'random-chat';
 }
 
 const CHAT_CARD_BACKGROUND = 'linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(140, 207, 255, 0.15) 51%, rgba(140, 207, 255, 0.4) 98%)';
@@ -70,6 +70,22 @@ export const MainLayout = ({
             <span className="text-sm text-[#5389B5] font-['Segoe_UI'] md:text-[18px]">journal</span>
             <img src={iconRepertoire} alt="Journal" className="h-5 w-5 md:h-[22px] md:w-[22px]" />
             {activeTab === 'journal' && (
+              <div className="absolute bottom-[-1.5px] left-0 right-0 h-[3px] bg-[#FCFCFC]" />
+            )}
+          </div>
+
+          {/* Random Chat Tab */}
+          <div
+            onClick={() => navigate('/random-chat')}
+            className={`relative z-10 ml-2 flex h-9 w-24 cursor-pointer items-center justify-center gap-1 rounded-t-[5px] px-3 border-[1.5px] border-[#A6C7E4] border-b-0 transition-all md:ml-[7px] md:h-[40px] md:w-[148px] md:justify-start md:gap-2 md:px-[18px] ${
+              activeTab === 'random-chat'
+                ? 'bg-gradient-to-b from-[#C7EEFF] to-[#FCFCFC] opacity-100'
+                : 'bg-gradient-to-b from-[#FCFCFC] to-[#C7EEFF] opacity-60 hover:opacity-80'
+            }`}
+          >
+            <span className="text-sm text-[#5389B5] font-['Segoe_UI'] md:text-[18px]">random</span>
+            <img src={iconChat} alt="Random Chat" className="h-5 w-5 object-contain md:h-[22px] md:w-[22px]" />
+            {activeTab === 'random-chat' && (
               <div className="absolute bottom-[-1.5px] left-0 right-0 h-[3px] bg-[#FCFCFC]" />
             )}
           </div>
